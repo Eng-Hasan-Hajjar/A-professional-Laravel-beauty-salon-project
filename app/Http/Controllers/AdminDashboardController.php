@@ -10,6 +10,7 @@ use App\Models\Inventory;
 use App\Models\Invoice;
 use App\Models\Review;
 use App\Models\Offer;
+use App\Models\Work;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -74,6 +75,28 @@ class AdminDashboardController extends Controller
     public function index_web()
     {
 
+  // جلب 6 خدمات مع فئاتها
+        $services = Service::with('category')->take(6)->get();
+
+        // جلب 6 عروض
+        $offers = Offer::take(6)->get();
+
+        // جلب 6 منتجات
+        $products = Inventory::take(6)->get();
+
+        // جلب 8 أعمال مع صور المعرض
+        $works = Work::with('galleryImages')->take(8)->get();
+
+        // جلب 5 مراجعات مع أسماء العملاء
+        $reviews = Review::with('user')->take(5)->get();
+
+        // جلب 4 موظفين مع بيانات المستخدم
+        $employees = Employee::with('user')->take(4)->get();
+
+        return view('website.index', compact('services', 'offers', 'products', 'works', 'reviews', 'employees'));
+  
+
+        /*
         // Total Clients
         $clients = Client::all();
 
@@ -103,11 +126,35 @@ class AdminDashboardController extends Controller
             'activeServices',
             'activeOffers',
         ));
-   
+   */
     }
 
     public function trackVisit(Request $request)
     {
         // Implement visit tracking logic if needed
+    }
+
+
+     public function index()
+    {
+        // جلب 6 خدمات مع فئاتها
+        $services = Service::with('category')->take(6)->get();
+
+        // جلب 6 عروض
+        $offers = Offer::take(6)->get();
+
+        // جلب 6 منتجات
+        $products = Inventory::take(6)->get();
+
+        // جلب 8 أعمال مع صور المعرض
+        $works = Work::with('galleryImages')->take(8)->get();
+
+        // جلب 5 مراجعات مع أسماء العملاء
+        $reviews = Review::with('user')->take(5)->get();
+
+        // جلب 4 موظفين مع بيانات المستخدم
+        $employees = Employee::with('user')->take(4)->get();
+
+        return view('website.index', compact('services', 'offers', 'products', 'works', 'reviews', 'employees'));
     }
 }

@@ -3,7 +3,7 @@
 @section('content')
 <div class="container text-right" dir="rtl">
     <h2>إضافة خدمة جديدة</h2>
-    <form action="{{ route('services.store') }}" method="POST">
+    <form action="{{ route('services.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="mb-3">
             <label for="name" class="form-label text-right">اسم الخدمة</label>
@@ -13,7 +13,7 @@
             @enderror
         </div>
         <div class="mb-3">
-            <label for="description" class="form-label text-right">الوصف HXdescription</label>
+            <label for="description" class="form-label text-right">الوصف</label>
             <textarea name="description" class="form-control text-right @error('description') is-invalid @enderror">{{ old('description') }}</textarea>
             @error('description')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -46,6 +46,46 @@
             @enderror
         </div>
         <div class="mb-3">
+            <label for="image" class="form-label text-right">صورة الخدمة</label>
+            <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/jpeg,image/png">
+            @error('image')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+            <div id="image-preview" class="mt-2"></div>
+        </div>
+        <div class="mb-3">
+            <label for="availability" class="form-label text-right">التوفر</label>
+            <select name="availability" class="form-control @error('availability') is-invalid @enderror" required>
+                <option value="always" {{ old('availability') == 'always' ? 'selected' : '' }}>متوفر دائمًا</option>
+                <option value="seasonal" {{ old('availability') == 'seasonal' ? 'selected' : '' }}>موسمي</option>
+                <option value="on_demand" {{ old('availability') == 'on_demand' ? 'selected' : '' }}>حسب الطلب</option>
+            </select>
+            @error('availability')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="mb-3">
+            <label for="target_audience" class="form-label text-right">الجمهور المستهدف</label>
+            <input type="text" name="target_audience" class="form-control text-right @error('target_audience') is-invalid @enderror" value="{{ old('target_audience') }}">
+            @error('target_audience')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="mb-3">
+            <label for="requirements" class="form-label text-right">المتطلبات</label>
+            <textarea name="requirements" class="form-control text-right @error('requirements') is-invalid @enderror">{{ old('requirements') }}</textarea>
+            @error('requirements')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="mb-3">
+            <label for="featured" class="form-label text-right">مميزة</label>
+            <input type="checkbox" name="featured" value="1" {{ old('featured') ? 'checked' : '' }} class="form-check-input">
+            @error('featured')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="mb-3">
             <label for="status" class="form-label text-right">الحالة</label>
             <select name="status" class="form-control @error('status') is-invalid @enderror" required>
                 <option value="active" {{ old('status') == 'active' ? 'selected' : '' }}>نشط</option>
@@ -58,4 +98,21 @@
         <button type="submit" class="btn btn-success">حفظ</button>
     </form>
 </div>
+<script>
+    document.getElementById('image').addEventListener('change', function(e) {
+        const preview = document.getElementById('image-preview');
+        preview.innerHTML = '';
+        if (e.target.files && e.target.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.maxWidth = '150px';
+                img.style.borderRadius = '5px';
+                preview.appendChild(img);
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        }
+    });
+</script>
 @endsection

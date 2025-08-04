@@ -41,7 +41,7 @@ Route::get('template',function(){
 });
 /**************************************************   website   */
 
-Route::get('/', [AdminDashboardController::class, 'index_web'])->name('indexproperty'); 
+Route::get('/', [AdminDashboardController::class, 'index'])->name('indexproperty'); 
 
 
 
@@ -130,4 +130,14 @@ Route::resource('service-inventories', ServiceInventoryController::class);
 
 
 
+use App\Http\Controllers\WorkController;
+use App\Http\Controllers\WorkImageController;
 
+
+Route::resource('works', WorkController::class);
+Route::get('works-web', [WorkController::class, 'index_web'])->name('web_works');
+Route::get('works-web/{work}', [WorkController::class, 'index_web_single'])->name('web_works_single');
+
+
+Route::post('works/{work}/images', [WorkImageController::class, 'store'])->name('work-images.store');
+Route::delete('work-images/{workImage}', [WorkImageController::class, 'destroy'])->name('work-images.destroy');

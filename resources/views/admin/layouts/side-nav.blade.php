@@ -131,6 +131,18 @@
                 </a>
             </li> 
 
+
+
+            <li class="nav-item">
+                <a href="{{ route('works.index') }}" class="nav-link">
+              
+                  <p>   أعمالنا   </p>
+                </a>
+            </li> 
+
+
+
+
             @endif
             @if(auth()->user()->hasRole('admin'))
 
@@ -158,6 +170,12 @@
                             </a>
                         </li> 
 
+   <li class="nav-item">
+                <a href="{{ route('works.index') }}" class="nav-link">
+              
+                  <p>   أعمالنا   </p>
+                </a>
+            </li> 
 
              
                @endif
