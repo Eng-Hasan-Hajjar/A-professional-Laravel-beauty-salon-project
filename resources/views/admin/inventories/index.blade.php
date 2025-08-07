@@ -7,6 +7,7 @@
     <table class="table table-bordered mt-3">
         <thead>
             <tr>
+                <th class="text-right">الصورة</th>
                 <th class="text-right">اسم العنصر</th>
                 <th class="text-right">الوصف</th>
                 <th class="text-right">الكمية</th>
@@ -18,6 +19,15 @@
         <tbody>
             @foreach($inventories as $inventory)
                 <tr>
+                    <td class="text-right">
+                        @if ($inventory->image && File::exists(public_path($inventory->image)))
+                            <img src="{{ asset($inventory->image) }}" alt="{{ $inventory->name }}" style="width: 100px; height: 100px; object-fit: cover;">
+                        @else
+                            <div class="placeholder-image" style="width: 100px; height: 100px; background: #e9ecef; display: flex; align-items: center; justify-content: center; color: #adb5bd;">
+                                <i class="fas fa-box fa-2x"></i>
+                            </div>
+                        @endif
+                    </td>
                     <td class="text-right">{{ $inventory->name }}</td>
                     <td class="text-right">{{ $inventory->description ?? '-' }}</td>
                     <td class="text-right">{{ $inventory->quantity }}</td>

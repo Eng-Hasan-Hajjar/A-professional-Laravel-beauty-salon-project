@@ -5,30 +5,22 @@ namespace App\Http\Controllers;
 use App\Models\Employee;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class EmployeeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $employees = Employee::with('user')->get();
         return view('admin.employees.index', compact('employees'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $users = User::all();
         return view('admin.employees.create', compact('users'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -36,29 +28,33 @@ class EmployeeController extends Controller
             'specialty' => 'required|string|max:255',
             'hire_date' => 'required|date',
             'status' => 'required|in:active,inactive',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-
         try {
-            Employee::create($validated);
+            $data = $validated;
+
+            // Handle image upload
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $imageName = 'employee_' . time() . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('website/img/employees'), $imageName);
+                $data['image'] = 'website/img/employees/' . $imageName;
+            }
+
+            Employee::create($data);
             return redirect()->route('employees.index')->with('success', 'تم إنشاء الموظف بنجاح.');
         } catch (\Illuminate\Database\QueryException $e) {
             return redirect()->back()->with('error', 'حدث خطأ أثناء إنشاء الموظف: ' . $e->getMessage())->withInput();
         }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Employee $employee)
     {
         $users = User::all();
         return view('admin.employees.edit', compact('employee', 'users'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Employee $employee)
     {
         $validated = $request->validate([
@@ -66,22 +62,40 @@ class EmployeeController extends Controller
             'specialty' => 'required|string|max:255',
             'hire_date' => 'required|date',
             'status' => 'required|in:active,inactive',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         try {
-            $employee->update($validated);
+            $data = $validated;
+
+            // Handle image upload
+            if ($request->hasFile('image')) {
+                // Delete old image if exists
+                if ($employee->image && File::exists(public_path($employee->image))) {
+                    File::delete(public_path($employee->image));
+                }
+                $image = $request->file('image');
+                $imageName = 'employee_' . time() . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('website/img/employees'), $imageName);
+                $data['image'] = 'website/img/employees/' . $imageName;
+            } else {
+                $data['image'] = $employee->image; // Keep existing image
+            }
+
+            $employee->update($data);
             return redirect()->route('employees.index')->with('success', 'تم تحديث الموظف بنجاح.');
         } catch (\Illuminate\Database\QueryException $e) {
             return redirect()->back()->with('error', 'حدث خطأ أثناء تحديث الموظف: ' . $e->getMessage())->withInput();
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Employee $employee)
     {
         try {
+            // Delete image if exists
+            if ($employee->image && File::exists(public_path($employee->image))) {
+                File::delete(public_path($employee->image));
+            }
             $employee->delete();
             return redirect()->route('employees.index')->with('success', 'تم حذف الموظف بنجاح.');
         } catch (\Illuminate\Database\QueryException $e) {

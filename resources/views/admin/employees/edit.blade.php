@@ -3,7 +3,7 @@
 @section('content')
 <div class="container text-right" dir="rtl">
     <h2>تعديل الموظف</h2>
-    <form action="{{ route('employees.update', $employee) }}" method="POST">
+    <form action="{{ route('employees.update', $employee) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div class="mb-3">
@@ -39,6 +39,18 @@
                 <option value="inactive" {{ old('status', $employee->status) == 'inactive' ? 'selected' : '' }}>غير نشط</option>
             </select>
             @error('status')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="mb-3">
+            <label for="image" class="form-label text-right">صورة الموظف</label>
+            <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/jpeg,image/png">
+            @if ($employee->image && File::exists(public_path($employee->image)))
+                <div class="mt-2">
+                    <img src="{{ asset($employee->image) }}" alt="{{ $employee->user->name ?? '-' }}" style="width: 100px; height: 100px; object-fit: cover;">
+                </div>
+            @endif
+            @error('image')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>

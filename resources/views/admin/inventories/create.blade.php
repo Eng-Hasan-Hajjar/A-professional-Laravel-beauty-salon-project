@@ -3,7 +3,7 @@
 @section('content')
 <div class="container text-right" dir="rtl">
     <h2>إضافة عنصر مخزون جديد</h2>
-    <form action="{{ route('inventories.store') }}" method="POST">
+    <form action="{{ route('inventories.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="mb-3">
             <label for="name" class="form-label text-right">اسم العنصر</label>
@@ -16,6 +16,13 @@
             <label for="description" class="form-label text-right">الوصف</label>
             <textarea name="description" class="form-control text-right @error('description') is-invalid @enderror">{{ old('description') }}</textarea>
             @error('description')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="mb-3">
+            <label for="image" class="form-label text-right">صورة العنصر</label>
+            <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/jpeg,image/png">
+            @error('image')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>

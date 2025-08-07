@@ -7,6 +7,7 @@
     <table class="table table-bordered mt-3">
         <thead>
             <tr>
+                <th class="text-right">الصورة</th>
                 <th class="text-right">اسم الموظف</th>
                 <th class="text-right">التخصص</th>
                 <th class="text-right">تاريخ التعيين</th>
@@ -17,6 +18,15 @@
         <tbody>
             @foreach($employees as $employee)
                 <tr>
+                    <td class="text-right">
+                        @if ($employee->image && File::exists(public_path($employee->image)))
+                            <img src="{{ asset($employee->image) }}" alt="{{ $employee->user->name ?? '-' }}" style="width: 100px; height: 100px; object-fit: cover;">
+                        @else
+                            <div class="placeholder-image" style="width: 100px; height: 100px; background: #e9ecef; display: flex; align-items: center; justify-content: center; color: #adb5bd;">
+                                <i class="fas fa-user fa-2x"></i>
+                            </div>
+                        @endif
+                    </td>
                     <td class="text-right">{{ $employee->user->name ?? '-' }}</td>
                     <td class="text-right">{{ $employee->specialty }}</td>
                     <td class="text-right">{{ \Carbon\Carbon::parse($employee->hire_date)->format('Y-m-d') }}</td>

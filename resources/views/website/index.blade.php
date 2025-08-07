@@ -85,6 +85,15 @@
       font-size: 1.2rem;
       color: #0053c0;
     }
+    .product-item img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .product-item .card-body {
+      text-align: right;
+      padding: 15px;
+    }
   </style>
 </head>
 
@@ -243,9 +252,9 @@
                 <div class="offer-content">
                   <h3 class="lead">{{ $offer->name }}</h3>
                   <p>{{ $offer->discount_percentage }} % خصم </p>
-                  <p>  يبدأ بتاريخ  :    {{ $offer->start_date }}  </p>
-                  <p>   ينتهي بتاريخ :             {{ $offer->end_date }}   </p>
-                   <p>{{ $offer->description }}   </p>
+                  <p>يبدأ بتاريخ: {{ $offer->start_date }}</p>
+                  <p>ينتهي بتاريخ: {{ $offer->end_date }}</p>
+                  <p>{{ $offer->description }}</p>
                 </div>
               </div>
             </div>
@@ -266,17 +275,28 @@
           <h2>المنتجات</h2>
           <p>اكتشفي مجموعتنا المميزة من منتجات العناية بالشعر والبشرة.</p>
         </div>
-        <div class="owl-carousel clients-carousel">
+        <div class="row">
           @forelse ($products as $product)
-            @if ($product->image)
-              <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" class="card-img-top" style="height: 150px; object-fit: cover;">
-            @else
-              <div class="placeholder-image" style="height: 150px; background: #e9ecef; display: flex; align-items: center; justify-content: center; color: #adb5bd;">
-                <i class="fas fa-box fa-3x"></i>
+            <div class="col-lg-4 col-md-6">
+              <div class="card product-item wow fadeInRight" style="width: 18rem;">
+                @if ($product->image && File::exists(public_path($product->image)))
+                  <a href="{{ route('register', $product->id) }}">
+                    <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                  </a>
+                @else
+                  <div class="placeholder-image" style="height: 200px; background: #e9ecef; display: flex; align-items: center; justify-content: center; color: #adb5bd;">
+                    <i class="fas fa-box fa-3x"></i>
+                  </div>
+                @endif
+                <div class="card-body">
+                  <h5 class="card-title"><a href="{{ route('register', $product->id) }}">{{ $product->name }}</a></h5>
+                  <p class="card-text">{{ Str::limit($product->description, 100, '...') }}</p>
+                  <p class="card-text"><strong>السعر:</strong> {{ number_format($product->unit_price, 2) }} ر.س</p>
+                </div>
               </div>
-            @endif
+            </div>
           @empty
-            <div class="text-center text-muted p-4">
+            <div class="col-12 text-center text-muted p-4">
               <i class="fas fa-exclamation-triangle fa-2x"></i><br>
               لا توجد منتجات متاحة حاليًا
             </div>
@@ -373,8 +393,8 @@
             <div class="col-lg-3 col-md-6">
               <div class="member">
                 <div class="pic">
-                  @if ($employee->user->profile_photo_path)
-                    <img src="{{ asset($employee->user->profile_photo_path) }}" alt="{{ $employee->user->name }}">
+                  @if ($employee->image && File::exists(public_path($employee->image)))
+                    <img src="{{ asset($employee->image) }}" alt="{{ $employee->user->name ?? 'غير متوفر' }}">
                   @else
                     <div class="placeholder-image" style="height: 200px; background: #e9ecef; display: flex; align-items: center; justify-content: center; color: #adb5bd;">
                       <i class="fas fa-user fa-3x"></i>
@@ -383,7 +403,7 @@
                 </div>
                 <div class="details">
                   <h4>{{ $employee->user->name ?? 'غير متوفر' }}</h4>
-                  <span>{{ $employee->job_title ?? 'خبير تجميل' }}</span>
+                  <span>{{ $employee->specialty ?? 'خبير تجميل' }}</span>
                   <div class="social">
                     <a href="#"><i class="fa fa-twitter"></i></a>
                     <a href="#"><i class="fa fa-facebook"></i></a>
@@ -411,7 +431,7 @@
           <p>تواصلوا معنا للحجز أو للاستفسار عن خدماتنا.</p>
         </div>
         <div class="row contact-info">
-          <div class="col-lg-5">
+          <div class="col-lg-12">
             <div class="contact-address">
               <i class="ion-ios-location-outline"></i>
               <h3>العنوان</h3>
@@ -428,32 +448,7 @@
               <p><a href="mailto:contact@miraya.com">contact@miraya.com</a></p>
             </div>
           </div>
-          <div class="col-lg-7">
-            <div class="container">
-              <div class="form">
-                <form name="sentMessage" class="well" id="contactForm" novalidate>
-                  <div class="control-group">
-                    <div class="form-group">
-                      <input type="text" class="form-control" placeholder="الاسم الكامل" id="name" required data-validation-required-message="يرجى إدخال اسمك">
-                      <p class="help-block"></p>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <div class="controls">
-                      <input type="email" class="form-control" placeholder="البريد الإلكتروني" id="email" required data-validation-required-message="يرجى إدخال بريدك الإلكتروني">
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <div class="controls">
-                      <textarea rows="10" cols="100" class="form-control" placeholder="الرسالة" id="message" required data-validation-required-message="يرجى إدخال رسالتك" minlength="5" data-validation-minlength-message="الحد الأدنى 5 أحرف" maxlength="999" style="resize:none"></textarea>
-                    </div>
-                  </div>
-                  <div id="success"></div>
-                  <button type="submit" class="btn btn-primary pull-left">إرسال</button><br>
-                </form>
-              </div>
-            </div>
-          </div>
+      
         </div>
       </div>
       <div class="container mb-4 map">
@@ -469,7 +464,6 @@
       <div class="copyright">
         © حقوق النشر <strong>مرايا</strong>. جميع الحقوق محفوظة
       </div>
-     
     </div>
   </footer>
 

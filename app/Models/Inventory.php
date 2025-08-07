@@ -8,7 +8,7 @@ class Inventory extends Model
 {
       use HasFactory;
 
-    protected $fillable = ['name', 'description', 'quantity', 'unit_price', 'minimum_stock'];
+    protected $fillable = ['name', 'description' , 'image', 'quantity', 'unit_price', 'minimum_stock'];
 
     public function services()
     {

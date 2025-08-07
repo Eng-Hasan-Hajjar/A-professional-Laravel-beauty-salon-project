@@ -3,7 +3,7 @@
 @section('content')
 <div class="container text-right" dir="rtl">
     <h2>إضافة موظف جديد</h2>
-    <form action="{{ route('employees.store') }}" method="POST">
+    <form action="{{ route('employees.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="mb-3">
             <label for="user_id" class="form-label text-right">اسم المستخدم</label>
@@ -38,6 +38,13 @@
                 <option value="inactive" {{ old('status') == 'inactive' ? 'selected' : '' }}>غير نشط</option>
             </select>
             @error('status')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="mb-3">
+            <label for="image" class="form-label text-right">صورة الموظف</label>
+            <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/jpeg,image/png">
+            @error('image')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>
