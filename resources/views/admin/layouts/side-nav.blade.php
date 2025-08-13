@@ -50,11 +50,8 @@
                   <p>الرئيسية</p>
                 </a>
               </li>
-              @if(auth()->user()->hasRole('admin')|| auth()->user()->hasRole('user'))
+              @if(auth()->user()->hasRole('admin')|| auth()->user()->hasRole('manager'))
                   
-              
-
-              
               <li class="nav-item">
                 <a href="{{ route('service-categories.index') }}" class="nav-link">
             
@@ -144,6 +141,71 @@
 
 
             @endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              @if(auth()->user()->hasRole('user'))
+                    <li class="nav-item">
+                        <a href="{{ route('services.index') }}" class="nav-link">
+                        
+                          <p>  الخدمات  </p>
+                        </a>
+                    </li> 
+  
+                    <li class="nav-item">
+                      <a href="{{ route('appointments.index') }}" class="nav-link">
+                      
+                        <p>  المواعيد </p>
+                      </a>
+                  </li> 
+                  <li class="nav-item">
+                    <a href="{{ route('offers.index') }}" class="nav-link">
+                
+                      <p>    العروض  </p>
+                    </a>
+                </li> 
+
+                <li class="nav-item">
+                    <a href="{{ route('service-inventories.index') }}" class="nav-link">
+                  
+                      <p>    مخزونات الخدمات  </p>
+                    </a>
+                </li> 
+
+
+                <li class="nav-item">
+                    <a href="{{ route('works.index') }}" class="nav-link">
+                  
+                      <p>   أعمالنا   </p>
+                    </a>
+                </li> 
+              @endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             @if(auth()->user()->hasRole('admin'))
 
 
