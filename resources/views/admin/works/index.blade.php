@@ -9,16 +9,13 @@
                     <h1 class="m-0 text-dark">الأعمال</h1>
                 </div>
                 <div class="col-sm-6">
-                                    @if(auth()->user()->hasRole('admin')|| auth()->user()->hasRole('manager'))
-
-                    <div class="float-left">
-                        <a href="{{ route('works.create') }}" class="btn btn-primary">
-                            <i class="fas fa-plus"></i> إضافة عمل جديد
-                        </a>
-                    </div>
-
+                    @if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('manager'))
+                        <div class="float-left">
+                            <a href="{{ route('works.create') }}" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> إضافة عمل جديد
+                            </a>
+                        </div>
                     @endif
-
                 </div>
             </div>
         </div>
@@ -66,13 +63,7 @@
                                         <th style="width: 20%">تاريخ البدء</th>
                                         <th style="width: 20%">تاريخ الانتهاء</th>
                                         <th style="width: 20%">الموظف</th>
-
-                                                        @if(auth()->user()->hasRole('admin')|| auth()->user()->hasRole('manager'))
-
-
                                         <th style="width: 10%">الإجراءات</th>
-
-                                        @endif
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -82,26 +73,49 @@
                                             <td>{{ \Carbon\Carbon::parse($work->start_date)->format('d-m-Y') }}</td>
                                             <td>{{ \Carbon\Carbon::parse($work->end_date)->format('d-m-Y') }}</td>
                                             <td>{{ $work->employee->user->name ?? 'غير متوفر' }}</td>
-                                        
-                                        
-                                             @if(auth()->user()->hasRole('admin')|| auth()->user()->hasRole('manager'))
-
                                             <td>
                                                 <div class="btn-group">
-                                                    <a href="{{ route('works.edit', $work) }}" class="btn btn-sm btn-primary">
-                                                        <i class="fas fa-edit"></i> تعديل
-                                                    </a>
-                                                    <form action="{{ route('works.destroy', $work) }}" method="POST" style="display:inline;" class="ml-1">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('هل أنت متأكد من الحذف؟')">
-                                                            <i class="fas fa-trash"></i> حذف
-                                                        </button>
-                                                    </form>
+                                                    <button type="button" class="btn btn-sm btn-info ml-1" data-toggle="modal" data-target="#detailsModal{{ $work->id }}">عرض التفاصيل</button>
+                                                    @if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('manager'))
+                                                        <a href="{{ route('works.edit', $work) }}" class="btn btn-sm btn-primary">
+                                                            <i class="fas fa-edit"></i> تعديل
+                                                        </a>
+                                                        <form action="{{ route('works.destroy', $work) }}" method="POST" style="display:inline;" class="ml-1">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('هل أنت متأكد من الحذف؟')">
+                                                                <i class="fas fa-trash"></i> حذف
+                                                            </button>
+                                                        </form>
+                                                    @endif
                                                 </div>
                                             </td>
-                                            @endif
                                         </tr>
+
+                                        <!-- Modal for work details -->
+                                        <div class="modal fade" id="detailsModal{{ $work->id }}" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel{{ $work->id }}" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="detailsModalLabel{{ $work->id }}">تفاصيل العمل: {{ $work->title }}</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body" dir="rtl">
+                                                        <div class="text-right">
+                                                            <p><strong>اسم العمل:</strong> {{ $work->title }}</p>
+                                                            <p><strong>تاريخ البدء:</strong> {{ \Carbon\Carbon::parse($work->start_date)->format('d-m-Y') }}</p>
+                                                            <p><strong>تاريخ الانتهاء:</strong> {{ \Carbon\Carbon::parse($work->end_date)->format('d-m-Y') }}</p>
+                                                            <p><strong>الموظف:</strong> {{ $work->employee->user->name ?? 'غير متوفر' }}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">إغلاق</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     @empty
                                         <tr>
                                             <td colspan="5" class="text-center text-muted p-4">

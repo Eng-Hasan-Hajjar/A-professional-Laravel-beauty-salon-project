@@ -37,6 +37,7 @@
                     <td class="text-right">{{ \Carbon\Carbon::parse($schedule->end_time)->format('H:i') }}</td>
                     <td class="text-right">{{ $schedule->status == 'active' ? 'متاح' : 'غير متاح' }}</td>
                     <td class="text-right">
+                        <button type="button" class="btn btn-info ml-2" data-toggle="modal" data-target="#detailsModal{{ $schedule->id }}">عرض التفاصيل</button>
                         <a href="{{ route('employee-schedules.edit', $schedule) }}" class="btn btn-warning ml-2">تعديل</a>
                         <form action="{{ route('employee-schedules.destroy', $schedule) }}" method="POST" class="d-inline">
                             @csrf
@@ -45,6 +46,32 @@
                         </form>
                     </td>
                 </tr>
+
+                <!-- Modal for schedule details -->
+                <div class="modal fade" id="detailsModal{{ $schedule->id }}" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel{{ $schedule->id }}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="detailsModalLabel{{ $schedule->id }}">تفاصيل الجدول: {{ $schedule->employee->user->name ?? '-' }}</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body" dir="rtl">
+                                <div class="text-right">
+                                    <p><strong>الموظف:</strong> {{ $schedule->employee->user->name ?? '-' }}</p>
+                                    <p><strong>اليوم:</strong> {{ $days[$schedule->day_of_week] ?? '-' }}</p>
+                                    <p><strong>وقت البدء:</strong> {{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }}</p>
+                                    <p><strong>وقت الانتهاء:</strong> {{ \Carbon\Carbon::parse($schedule->end_time)->format('H:i') }}</p>
+                                    <p><strong>الحالة:</strong> {{ $schedule->status == 'active' ? 'متاح' : 'غير متاح' }}</p>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">إغلاق</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             @endforeach
         </tbody>
     </table>
