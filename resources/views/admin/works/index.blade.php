@@ -9,11 +9,16 @@
                     <h1 class="m-0 text-dark">الأعمال</h1>
                 </div>
                 <div class="col-sm-6">
+                                    @if(auth()->user()->hasRole('admin')|| auth()->user()->hasRole('manager'))
+
                     <div class="float-left">
                         <a href="{{ route('works.create') }}" class="btn btn-primary">
                             <i class="fas fa-plus"></i> إضافة عمل جديد
                         </a>
                     </div>
+
+                    @endif
+
                 </div>
             </div>
         </div>
@@ -61,7 +66,13 @@
                                         <th style="width: 20%">تاريخ البدء</th>
                                         <th style="width: 20%">تاريخ الانتهاء</th>
                                         <th style="width: 20%">الموظف</th>
+
+                                                        @if(auth()->user()->hasRole('admin')|| auth()->user()->hasRole('manager'))
+
+
                                         <th style="width: 10%">الإجراءات</th>
+
+                                        @endif
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -71,6 +82,10 @@
                                             <td>{{ \Carbon\Carbon::parse($work->start_date)->format('d-m-Y') }}</td>
                                             <td>{{ \Carbon\Carbon::parse($work->end_date)->format('d-m-Y') }}</td>
                                             <td>{{ $work->employee->user->name ?? 'غير متوفر' }}</td>
+                                        
+                                        
+                                             @if(auth()->user()->hasRole('admin')|| auth()->user()->hasRole('manager'))
+
                                             <td>
                                                 <div class="btn-group">
                                                     <a href="{{ route('works.edit', $work) }}" class="btn btn-sm btn-primary">
@@ -85,6 +100,7 @@
                                                     </form>
                                                 </div>
                                             </td>
+                                            @endif
                                         </tr>
                                     @empty
                                         <tr>
